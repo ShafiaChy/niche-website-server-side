@@ -1,11 +1,11 @@
 # Pout Perfect Server.
 
 
-My project link: [Pout Perfect Server.]()
+My project link: [Pout Perfect Server.](https://niche-website-36fe3.web.app/)
 
 ## About my server
 <ol>
-    <li>The Server used GET method to get the API of a particular collection on mongoDB database.
+    <li>The Server used GET method to get the API of a particular collection on <b>MongoDB</b> database.
     <li>The Server used POST method to add new products and reviews on the database.
     <li>The server used DELETE method to deleted products and orders.</li>
     <li>The server used PUT method to update if a new user registers.</li>
