@@ -3,9 +3,18 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 const ObjectId = require('mongodb').ObjectId;
 const cors = require('cors');
+const admin = require("firebase-admin");
 const app = express();
 const port = process.env.PORT || 5000;
 
+
+const serviceAccount = require("./niche-website-firebase-adminsdk.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+//niche-website-firebase-adminsdk.json
 //middleware
 app.use(cors());
 app.use(express.json())
@@ -13,6 +22,22 @@ console.log('hi')
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ebhzh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function verifyToken(req, res, next){
+    if(req.headers?.authorization?.startsWith('Bearer '))
+    {
+        const token = req.headers.authorization.split(' ')[1];
+
+        try{
+            const decodedUser = await admin.auth().verifyIdToken(token);
+            req.decodedEmail = decodedUser.email; 
+        }
+        catch{
+
+        }
+    }
+    next();
+}
 
 async function run(){
     try{
@@ -119,13 +144,24 @@ async function run(){
         });
 
          //PUT ADMIN API
-         app.put('/users/admin', async(req,res) =>{
+         app.put('/users/admin', verifyToken, async(req,res) =>{
             const user = req.body;
-            console.log('put',user)
-            const filter = {email: user.email};
-            const updateDoc = { $set: {role:'admin'}};
-            const result = await usersCollection.updateOne(filter, updateDoc);
-            res.json(result);
+            const requester = req.decodedEmail;
+            if(requester){
+                const requesterAccount = await usersCollection.findOne({email: requester});
+            
+            if(requesterAccount.role === 'admin'){
+                console.log('put', req.decodedEmail)
+                const filter = {email: user.email};
+                const updateDoc = { $set: {role:'admin'}};
+                const result = await usersCollection.updateOne(filter, updateDoc);
+                res.json(result);
+            }
+        }
+            else{
+                res.status(403).json({message:'you dont have access to this route'})
+            }
+           
         });
 
         //GET ADMIN API
