@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 
-const serviceAccount = require("./niche-website-firebase-adminsdk.json");
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -204,7 +204,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) =>{
-    res.send('Niche website running');
+    res.send('Niche website running quickly');
 });
 
 app.listen(port, ()=>{
