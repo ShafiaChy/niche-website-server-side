@@ -146,6 +146,7 @@ async function run() {
     });
 
     //PUT ADMIN API
+    //PUT ADMIN API
     app.put("/users/admin", verifyToken, async (req, res) => {
       const user = req.body;
       const requester = req.decodedEmail;
@@ -207,9 +208,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("I am alive!");
+  res.send("Happy laaahhh!");
 });
 
 app.listen(port, () => {
-  console.log("hey i am running");
+  console.log("hey i am running nnnn");
 });
