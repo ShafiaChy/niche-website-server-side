@@ -15,7 +15,13 @@ admin.initializeApp({
 
 //niche-website-firebase-adminsdk.json
 //middleware
-app.use(cors());
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 console.log("hi");
 
@@ -39,7 +45,7 @@ async function verifyToken(req, res, next) {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     const database = client.db("niche");
     const productsCollection = database.collection("products");
     const reviewCollection = database.collection("reviews");
@@ -214,5 +220,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log("hey i am running nnnn");
 });
-
-module.exports = app;
